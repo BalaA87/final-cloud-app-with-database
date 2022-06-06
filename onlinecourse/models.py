@@ -113,12 +113,18 @@ class Question(models.Model):
 
     # <HINT> A sample model method to calculate if learner get the score of the question
     def is_get_score(self, selected_ids):
-       all_answers = self.choice_set.filter(is_correct=True) #add .count() if something goes wrong
-       selected_correct = self.choice_set.filter(is_correct=True, id__in=selected_ids)
-       if all_answers == selected_correct:
-           return True
-       else:
-           return False
+       all_answers = self.choice_set.all()
+       correct_answers = self.choice_set.filter(is_correct=True) #add .count() if something goes wrong
+       selected_correct = self.choice_set.filter(id__in=selected_ids)
+       #check counts and also first if everything selected is correct
+       
+       for answer in all_answers:
+           if answer in correct_answers and answer not in selected_correct:
+               return False
+           elif answer in selected_correct and answer not in correct_answers:
+               return False
+       return True
+       
 
 
 #  <HINT> Create a Choice Model with:

@@ -53,7 +53,7 @@
             <!--HINT Display exam results-->
             {% for question in course.question_set.all %}
             <div class="card mt-1">
-                <div class="card-header"><h5>{{ question.question_text }}</h5></div>
+                <div class="card-header"><h5>{{ question.text }}</h5></div>
                 {% csrf_token %}
                 <div class="card-body">
                 {% for choice in question.choice_set.all %}
@@ -61,21 +61,21 @@
                     {% if choice.is_correct %}
                         {% if choice in choices %}
                             <div class='card-text text-success'>
-                                Correct answer: {{ choice.choice_text }}
+                                Correct answer: {{ choice.content }}
                             </div>
                         {% else %}
                             <div class='card-text text-warning'>
-                                Not selected: {{ choice.choice_text }}
+                                Not selected: {{ choice.content }}
                             </div>
                         {% endif %}
                     {% else %}
                         {% if choice in choices %}
                             <div class='card-text text-danger'>
-                                Incorrectly selected: {{ choice.choice_text }}
+                                Incorrectly selected: {{ choice.content }}
                             </div>
                         {% else %}
                             <div class='card-text'>
-                                {{ choice.choice_text }}
+                                {{ choice.content }}
                             </div>
                         {% endif %}
                     {% endif %}

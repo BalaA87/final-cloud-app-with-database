@@ -126,9 +126,9 @@ def submit(request, course_id):
     submitted_answers = extract_answers(request)
     submission = Submission.objects.create(enrollment=enrollment)
     for choice in submitted_answers:
-        submission.choices.add(Choice.objects.get(id=choice))
+        submission.choices.add(choice)
     submission.save()
-    return HttpResponseRedirect(reverse(viewname='onlinecourse:show_exam_result', args=(submission.id,)))
+    return HttpResponseRedirect(reverse(viewname='onlinecourse:result', args=(course_id, submission.id,)))
 
 
 
@@ -143,17 +143,14 @@ def submit(request, course_id):
 def show_exam_result(request, course_id, submission_id):
     course = get_object_or_404(Course, pk=course_id)
     submission = get_object_or_404(Submission, pk=submission_id)
-    selected_choices = submission.choices
+    choices = submission.choices.all()
     total = 0
     score = 0
-    choices = []
-    for choice in selected_choices:
-        choices.append(choice.id)
     for question in course.question_set.all():
         if question.is_get_score(choices):
             score = score + 1
         total = total + 1
-    grade = (score * 100)//total
+    grade = int((score * 100)/total)
     context = {}
     context['course'] = course
     context['choices'] = choices
